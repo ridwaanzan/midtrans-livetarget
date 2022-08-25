@@ -1,0 +1,15 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  livetarget:
+    lang: java11
+    handler: ./livetarget
+    image: livetarget:latest
+    environment:
+      MIDTRANS_URL: https://api.sandbox.midtrans.com/v2/charge
+      MIDTRANS_MERCHANT_ID: M112183
+      MIDTRANS_CLIENT_KEY: SB-Mid-client-AFW54mwyHkUu3aie
+      MIDTRANS_SERVER_KEY: SB-Mid-server-JwoLUwQriJYXexyXE79Xlo0t
+
