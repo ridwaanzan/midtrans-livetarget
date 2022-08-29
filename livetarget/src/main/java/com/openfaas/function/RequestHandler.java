@@ -24,6 +24,7 @@ public class RequestHandler {
     public static String midtransMerchantId = System.getenv("MIDTRANS_MERCHANT_ID");
     public static String midtransClientKey  = System.getenv("MIDTRANS_CLIENT_KEY");
     public static String midtransServerKey  = System.getenv("MIDTRANS_SERVER_KEY");
+    public static String oracleDBHandler    = System.getenv("ORACLE_DB_HANDLER");
 
     public static IResponse vulnHandler(IRequest req) {
         logging.info("======: Vuln Handler");
@@ -83,6 +84,52 @@ public class RequestHandler {
 
         res.setContentType("application/json");
         return res;
+    }
+
+    public static IResponse productHandler(IRequest req) {
+        Request request;
+        Response response = new Response();
+        Map getProduct = new HashMap<>(1);
+        getProduct.put("query", "SELECT id,name,kategori,price,images FROM midtrans_livetarget");
+        getProduct.put("type", "findall");
+
+        String jsonReqBody = gson.toJson(getProduct);
+        RequestBody requestBody = RequestBody.create(jsonReqBody, JSON);
+
+        request = new Request.Builder()
+                .url(oracleDBHandler)
+                .post(requestBody)
+                .build();
+        logging.info("======: Hitting to " + request.url());
+
+        try {
+            okhttp3.Response resp = httpClient.newCall(request).execute();
+            Map mapResponse       = gson.fromJson(resp.body().string(), Map.class);
+            if (mapResponse.containsKey("isSuccess")) {
+                if (mapResponse.get("isSuccess").equals(Boolean.TRUE)) {
+                    Response result = UtilsResponse.rpvResponse(Boolean.TRUE, 2000, "Success get products", mapResponse);
+                    response.setBody(result.getBody());
+                    response.setHeader("Access-Control-Allow-Origin", "*");
+                    response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
+                    response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,HEAD");
+                } else {
+                    Response result = UtilsResponse.rpvResponse(Boolean.FALSE, 2666, "Failed get products", "");
+                    response.setBody(result.getBody());
+                }
+            } else {
+                Response result = UtilsResponse.rpvResponse(Boolean.FALSE, 2666, "Failed get products", "");
+                response.setBody(result.getBody());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Response result = UtilsResponse.rpvResponse(Boolean.FALSE, 2666, e.getMessage(), "");
+            response.setBody(result.getBody());
+        }
+
+        response.setContentType("application/json");
+        response.setStatusCode(200);
+        return response;
     }
 
     public static IResponse fixHandler(IRequest req) {

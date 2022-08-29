@@ -12,4 +12,5 @@ functions:
       MIDTRANS_MERCHANT_ID: M112183
       MIDTRANS_CLIENT_KEY: SB-Mid-client-AFW54mwyHkUu3aie
       MIDTRANS_SERVER_KEY: SB-Mid-server-JwoLUwQriJYXexyXE79Xlo0t
+      ORACLE_DB_HANDLER: http://10.70.133.83:8080/function/oracle-db-handler
 

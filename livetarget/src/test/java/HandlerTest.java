@@ -19,6 +19,7 @@ public class HandlerTest {
         props.setProperty("midtransMerchantId", "M112183");
         props.setProperty("midtransClientKey", "SB-Mid-client-AFW54mwyHkUu3aie");
         props.setProperty("midtransServerKey", "SB-Mid-server-JwoLUwQriJYXexyXE79Xlo0t");
+        props.setProperty("oracleDBHandler", "http://10.70.133.83:8080/function/oracle-db-handler");
     }
 
     @Test public void vulnTester() {
@@ -29,6 +30,7 @@ public class HandlerTest {
         requestHandler.midtransMerchantId = props.getProperty("midtransMerchantId");
         requestHandler.midtransClientKey  = props.getProperty("midtransClientKey");
         requestHandler.midtransServerKey  = props.getProperty("midtransServerKey");
+        requestHandler.oracleDBHandler    = props.getProperty("oracleDBHandler");
 
         String reqBody = "{\n" +
                         "    \"order_id\": \"order-107\",\n" +
@@ -40,5 +42,11 @@ public class HandlerTest {
         System.out.println(handler.Handle(request).getBody());
 
         assertTrue(handler != null);
+    }
+
+    @Test public void productTester() {
+        Handler handler = new Handler();
+        Request request = new Request(null, new HashMap<>(), new String(), "/all-products");
+        System.out.println(handler.Handle(request).getBody());
     }
 }

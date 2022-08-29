@@ -29,6 +29,8 @@ public class Handler extends com.openfaas.model.AbstractHandler {
         } else if (path.contains("fixed")) {
             logging.info("======: fixing-payment");
             return RequestHandler.fixHandler(req);
+        } else if (path.contains("all-products")) {
+            return RequestHandler.productHandler(req);
         }
 
         return res;
